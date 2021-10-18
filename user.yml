@@ -1,0 +1,72 @@
+---
+- name: user
+  #become: true
+  hosts: all
+  #hosts: demo
+  any_errors_fatal: yes
+  #vars_prompt:
+  #  - name: user
+  #    prompt: "input"
+  #    private: no
+
+  #vars:
+  #  user: test
+  #vars_files:
+  #  - ./vars.yml 
+  tasks:
+    - name: preconfig
+      block: 
+        - name: create user
+          vars:
+            user: test  
+          user: 
+            name: "{{ user }}"
+            state: present
+          register: error
+          ignore_errors: yes
+          #become: no
+          #register: out
+          #debugger: always, never, on_filed, on_unreachable, on_skipped
+          debugger: never 
+        #- debug:
+        #    var: out  
+        - name: install curl
+          apt:
+            name: curl
+            update-cache: yes
+          register: error
+        - name: fail____
+          command: echo "FAIED"
+          register: command_result
+          failed_when: "'FAILED' in command_result.stdout"
+      become: true
+      when: ansible_facts['distribution'] == "Ubuntu"
+      rescue:
+        - name: print error
+          debug:
+            var: error
+      always:
+        - name: reboot
+          debug:
+            msg: "reboot"
+      
+    - name: block_2
+      block: 
+        - name: sleep
+          command: /bin/sleep 15
+          async: 1000
+          poll: 0
+          register: sleep
+        - debug:
+            var: sleep
+        - name: Echo
+          command: echo "Hello"
+      become: true
+    - name: check
+      async_status: 
+        jid: "{{  sleep.ansible_job_id  }}"
+      register: job_result  
+      #untill: job_result.finished
+      retries: 100
+      delay: 1
+      become: yes

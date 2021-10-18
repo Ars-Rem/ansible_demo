@@ -1,0 +1,83 @@
+---
+- name: preconfig
+  become: yes
+  hosts: demo
+  ignore_errors: no
+  tasks:
+    - name: install docker
+      block:
+        - name: get universe
+          apt_repository:
+            repo: "deb http://us.archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
+            state: present
+          
+
+        - name: install extra pkg
+          apt:
+            name:
+              - apt-get install
+              - apt-transport-https
+              - ca-certificates
+              - curl
+              - gnupg
+              - lsb-release
+            update-cache: yes
+            cache_valid_time: 86400
+          
+          
+        - name: Add Docker’s official GPG key
+          apt_key:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+         
+
+        - name: install ustable repo
+          apt_repository:
+            repo: > 
+              deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+              https://download.docker.com/linux/ubuntu 
+              {{ ansible_distribution_release }} stable 
+            state: present
+            update-cache: yes
+            filename: docker
+         
+        - name: install docker-ce
+          apt:
+            name: docker-ce
+            update-cache: yes
+         
+        - name: check docker install and reboot
+          service:
+            name: docker
+            state: restarted
+            enabled: yes
+
+        - name: install docker-compose
+          apt:
+            name:
+              url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)
+              state: present
+
+        - name: Apply executable permissions to the binary
+          command: chmod +x /docker-compose
+          #become: yes
+
+       # - name: Test the installation
+       #   command: docker-compose --version
+       #   state: present
+       #   register: compose_version
+          
+    - name: install docker-compose
+      block:
+        - name: get last version dc
+          uri:
+            url: deb http://us.archive.ubuntu.com/ubuntu/ 
+            body_format: json
+            register: page
+
+        - name: install docker-compose
+          get_url:
+            url:  "https://github.com/docker/compose/releases/download/{{ page.json.tag_name }}/docker-compose-Linux-x86_64"
+            dest: /usr/local/bin/docker-compose
+            mode: 0755
+            
