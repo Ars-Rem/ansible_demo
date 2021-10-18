@@ -60,13 +60,7 @@
 
         - name: Apply executable permissions to the binary
           command: chmod +x /docker-compose
-          #become: yes
-
-       # - name: Test the installation
-       #   command: docker-compose --version
-       #   state: present
-       #   register: compose_version
-          
+           
     - name: install docker-compose
       block:
         - name: get last version dc
@@ -80,4 +74,10 @@
             url:  "https://github.com/docker/compose/releases/download/{{ page.json.tag_name }}/docker-compose-Linux-x86_64"
             dest: /usr/local/bin/docker-compose
             mode: 0755
+        
+        - name: end installation
+          block:
+            - name: add user to docker-group
+            
+            
             
