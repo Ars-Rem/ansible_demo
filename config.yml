@@ -6,7 +6,7 @@
   tasks:
     - name: install docker
       block:
-        - name: get universe
+        - name: get_uiverse
           apt_repository:
             repo: "deb http://us.archive.ubuntu.com/ubuntu/ {{ ansible_distribution_release }} universe"
             state: present
