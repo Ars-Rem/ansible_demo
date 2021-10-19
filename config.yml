@@ -69,7 +69,7 @@
       block:
       - name: add user to docker-group
         user:
-          name: test
+          name: "{{ ansible_user }}"
           groups: docker
         
       - name: reboot server
