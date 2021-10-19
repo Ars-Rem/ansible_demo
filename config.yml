@@ -38,8 +38,8 @@
             state: present
             update-cache: yes
             filename: docker
-            #hirsute
          
+
         - name: install docker-ce
           apt:
             name: docker-ce
@@ -51,6 +51,7 @@
             state: restarted
             enabled: yes
            
+
     - name: get docker-compose
       block:
         - name: get last version dc
@@ -64,6 +65,7 @@
             url:  "https://github.com/docker/compose/releases/download/{{ page.json.tag_name }}/docker-compose-Linux-x86_64"
             dest: /usr/local/bin/docker-compose
             mode: 0755
+        
         
     - name: end installation
       block:
