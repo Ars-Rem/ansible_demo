@@ -66,14 +66,14 @@
             dest: /usr/local/bin/docker-compose
             mode: 0755
         
-        
+
     - name: end installation
       block:
       - name: add user to docker-group
         user:
           name: "{{ ansible_user }}"
           groups: docker
-        
+          append: yes
       - name: reboot server
         reboot:
 
