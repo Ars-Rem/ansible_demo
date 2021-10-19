@@ -15,7 +15,6 @@
         - name: install extra pkg
           apt:
             name:
-              - apt-get install
               - apt-transport-https
               - ca-certificates
               - curl
@@ -34,12 +33,12 @@
         - name: install ustable repo
           apt_repository:
             repo: > 
-              deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
-              https://download.docker.com/linux/ubuntu 
+              deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu 
               {{ ansible_distribution_release }} stable 
             state: present
             update-cache: yes
             filename: docker
+            #hirsute
          
         - name: install docker-ce
           apt:
@@ -51,23 +50,14 @@
             name: docker
             state: restarted
             enabled: yes
-
-        - name: install docker-compose
-          apt:
-            name:
-              url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)
-              state: present
-
-        - name: Apply executable permissions to the binary
-          command: chmod +x /docker-compose
            
-    - name: install docker-compose
+    - name: get docker-compose
       block:
         - name: get last version dc
           uri:
-            url: deb http://us.archive.ubuntu.com/ubuntu/ 
+            url: https://api.github.com/repos/docker/compose/releases/latest
             body_format: json
-            register: page
+          register: page
 
         - name: install docker-compose
           get_url:
@@ -75,9 +65,15 @@
             dest: /usr/local/bin/docker-compose
             mode: 0755
         
-        - name: end installation
-          block:
-            - name: add user to docker-group
-            
-            
-            
+    - name: end installation
+      block:
+      - name: add user to docker-group
+        user:
+          name: test
+          groups: docker
+        
+      - name: reboot server
+        reboot:
+
+
+        
