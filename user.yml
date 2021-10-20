@@ -1,17 +1,17 @@
 ---
 - name: user
-  #become: true
+ # become: true
   hosts: all
-  #hosts: demo
-  any_errors_fatal: yes
-  #vars_prompt:
+  # hosts: demo
+  any_errors_fatal: true
+  # vars_prompt:
   #  - name: user
   #    prompt: "input"
   #    private: no
 
-  #vars:
+  # vars:
   #  user: test
-  #vars_files:
+  # vars_files:
   #  - ./vars.yml 
   tasks:
     - name: preconfig
@@ -23,17 +23,17 @@
             name: "{{ user }}"
             state: present
           register: error
-          ignore_errors: yes
-          #become: no
-          #register: out
-          #debugger: always, never, on_filed, on_unreachable, on_skipped
+          ignore_errors: true
+          # become: false
+          # register: out
+          # debugger: always, never, on_filed, on_unreachable, on_skipped
           debugger: never 
-        #- debug:
+        # - debug:
         #    var: out  
         - name: install curl
           apt:
             name: curl
-            update-cache: yes
+            update-cache: true
           register: error
         - name: fail____
           command: echo "FAIED"
@@ -66,7 +66,7 @@
       async_status: 
         jid: "{{  sleep.ansible_job_id  }}"
       register: job_result  
-      #untill: job_result.finished
+      # untill: job_result.finished
       retries: 100
       delay: 1
-      become: yes
+      become: true

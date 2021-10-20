@@ -1,0 +1,5 @@
+exclude_paths:
+- .github/
+skip_list:
+  - skip_this_tag
+  - git-latest
