@@ -20,12 +20,13 @@
               - gnupg
               - lsb-release
             update-cache: true
-            cache_valid_time: 86400        
+            cache_valid_time: 86400
+
         - name: Add Docker’s official GPG key
           apt_key:
             url: https://download.docker.com/linux/ubuntu/gpg
             state: present
-         
+            keyring: /usr/share/keyrings/docker-archive-keyring.gpg
 
         - name: install ustable repo
           apt_repository:
@@ -45,7 +46,8 @@
             name: docker
             state: restarted
             enabled: true
-      become: true     
+      become: true
+
     - name: get docker-compose
       block:
         - name: get last version dc
