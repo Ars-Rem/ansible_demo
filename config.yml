@@ -1,7 +1,7 @@
 ---
 - name: preconfig
  #  become: true
-  hosts: demo
+  hosts: cluster
   ignore_errors: true
   tasks:
     - name: install docker
