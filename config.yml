@@ -1,6 +1,6 @@
 ---
 - name: preconfig
-  become: yes
+  #become: yes
   hosts: demo
   ignore_errors: no
   tasks:
@@ -50,7 +50,7 @@
             name: docker
             state: restarted
             enabled: yes
-           
+      become: yes     
 
     - name: get docker-compose
       block:
@@ -65,9 +65,10 @@
             url:  "https://github.com/docker/compose/releases/download/{{ page.json.tag_name }}/docker-compose-Linux-x86_64"
             dest: /usr/local/bin/docker-compose
             mode: 0755
-        
+      become: yes    
 
     - name: end installation
+      become: yes  
       block:
       - name: add user to docker-group
         user:
